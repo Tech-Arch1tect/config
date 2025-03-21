@@ -5,15 +5,11 @@ import (
 	"os"
 	"reflect"
 	"strconv"
-
-	"github.com/go-playground/validator/v10"
 )
 
 type DefaultSetter interface {
 	SetDefaults()
 }
-
-var validate = validator.New()
 
 func Load[T DefaultSetter](cfg T) error {
 	cfg.SetDefaults()
@@ -52,8 +48,9 @@ func Load[T DefaultSetter](cfg T) error {
 		}
 	}
 
-	if err := validate.Struct(cfg); err != nil {
+	if err := ValidateStruct(cfg); err != nil {
 		return fmt.Errorf("validation error: %w", err)
 	}
+
 	return nil
 }

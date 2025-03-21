@@ -9,8 +9,8 @@ import (
 
 // example config struct with validation
 type AppConfig struct {
-	AppName string `env:"APP_NAME" validate:"required"`
-	Port    int    `env:"PORT" validate:"required"`
+	AppName string `env:"APP_NAME" validate:"required,min=10"`
+	Port    int    `env:"PORT" validate:"required,max=65535"`
 }
 
 // default values if not set in environment
