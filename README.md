@@ -7,6 +7,7 @@ An extremely simple library to load configurations from environment variables.
 - **required**: Ensures a value is provided.
 - **min**: Checks that a numeric value is greater than or equal to a minimum, or that a string has at least the minimum number of characters.
 - **max**: Checks that a numeric value is less than or equal to a maximum, or that a string does not exceed the maximum number of characters.
+- **email**: Validates that a string is a properly formatted email address.
 
 ## Installation
 
@@ -26,25 +27,26 @@ import (
     "log"
 
     "github.com/Tech-Arch1tect/config"
-
 )
 
 type AppConfig struct {
-AppName string `env:"APP_NAME" validate:"required,min=10"`
-Port int `env:"PORT" validate:"required,max=65535"`
+    AppName string `env:"APP_NAME" validate:"required,min=10"`
+    Port    int    `env:"PORT" validate:"required,max=65535"`
+    Email   string `env:"APP_EMAIL" validate:"required,email"`
 }
 
-func (c \*AppConfig) SetDefaults() {
-c.AppName = "Default App"
-c.Port = 8080
+func (c *AppConfig) SetDefaults() {
+    c.AppName = "Default App"
+    c.Port = 8080
+    c.Email = "default@example.com"
 }
 
 func main() {
-var cfg AppConfig
-if err := config.Load(&cfg); err != nil {
-log.Fatalf("Failed to load config: %v", err)
-}
-fmt.Printf("Loaded configuration: %+v\n", cfg)
+    var cfg AppConfig
+    if err := config.Load(&cfg); err != nil {
+        log.Fatalf("Failed to load config: %v", err)
+    }
+    fmt.Printf("Loaded configuration: %+v\n", cfg)
 }
 ```
 

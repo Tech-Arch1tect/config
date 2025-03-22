@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"net/mail"
 	"reflect"
 	"strconv"
 )
@@ -10,7 +11,7 @@ func init() {
 	RegisterValidator("required", RequiredValidator)
 	RegisterValidator("min", MinValidator)
 	RegisterValidator("max", MaxValidator)
-
+	RegisterValidator("email", EmailValidator)
 }
 
 func RequiredValidator(field reflect.StructField, value reflect.Value, param string) error {
@@ -56,6 +57,14 @@ func MaxValidator(field reflect.StructField, value reflect.Value, param string) 
 		}
 	default:
 		return fmt.Errorf("unsupported type for max validation: %s", value.Kind())
+	}
+	return nil
+}
+
+func EmailValidator(field reflect.StructField, value reflect.Value, param string) error {
+	_, err := mail.ParseAddress(value.String())
+	if err != nil {
+		return fmt.Errorf("field '%s' must be a valid email address", field.Name)
 	}
 	return nil
 }
