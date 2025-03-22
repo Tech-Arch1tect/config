@@ -18,6 +18,7 @@ func init() {
 	RegisterValidator("url", URLValidator)
 	RegisterValidator("regexp", RegexpValidator)
 	RegisterValidator("in", InValidator)
+	RegisterValidator("not_in", NotInValidator)
 }
 
 func RequiredValidator(field reflect.StructField, value reflect.Value, param string) error {
@@ -102,4 +103,14 @@ func InValidator(field reflect.StructField, value reflect.Value, param string) e
 		}
 	}
 	return fmt.Errorf("field '%s' must be one of the following values: %s", field.Name, param)
+}
+
+func NotInValidator(field reflect.StructField, value reflect.Value, param string) error {
+	allowedValues := strings.Split(param, "|")
+	for _, allowedValue := range allowedValues {
+		if value.String() == allowedValue {
+			return fmt.Errorf("field '%s' must not be one of the following values: %s", field.Name, param)
+		}
+	}
+	return nil
 }
