@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"net/mail"
+	"net/url"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -13,6 +14,7 @@ func init() {
 	RegisterValidator("min", MinValidator)
 	RegisterValidator("max", MaxValidator)
 	RegisterValidator("email", EmailValidator)
+	RegisterValidator("url", URLValidator)
 	RegisterValidator("regexp", RegexpValidator)
 }
 
@@ -78,6 +80,14 @@ func RegexpValidator(field reflect.StructField, value reflect.Value, param strin
 	}
 	if !regex.MatchString(value.String()) {
 		return fmt.Errorf("field '%s' must match the pattern '%s'", field.Name, param)
+	}
+	return nil
+}
+
+func URLValidator(field reflect.StructField, value reflect.Value, param string) error {
+	parsed, err := url.ParseRequestURI(value.String())
+	if err != nil || parsed.Scheme == "" || parsed.Host == "" {
+		return fmt.Errorf("field '%s' must be a valid URL", field.Name)
 	}
 	return nil
 }
