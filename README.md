@@ -8,6 +8,8 @@ An extremely simple library to load configurations from environment variables.
 - **min**: Checks that a numeric value is greater than or equal to a minimum, or that a string has at least the minimum number of characters.
 - **max**: Checks that a numeric value is less than or equal to a maximum, or that a string does not exceed the maximum number of characters.
 - **email**: Validates that a string is a properly formatted email address.
+- **url**: Validates that a string is a properly formatted URL.
+- **regexp**: Validates that a string matches a given regular expression pattern.
 
 ## Installation
 
