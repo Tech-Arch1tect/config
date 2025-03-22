@@ -12,6 +12,7 @@ An extremely simple library to load configurations from environment variables.
 - **regexp**: Validates that a string matches a given regular expression pattern.
 - **in**: Validates that a string is one of a set of allowed values, using the pipe (`|`) character as a delimiter.
 - **not_in**: Validates that a string is not one of a set of disallowed values, using the pipe (`|`) character as a delimiter.
+- **eq**: Validates that a string is equal to a specified value.
 
 ## Installation
 

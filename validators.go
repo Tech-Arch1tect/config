@@ -19,6 +19,7 @@ func init() {
 	RegisterValidator("regexp", RegexpValidator)
 	RegisterValidator("in", InValidator)
 	RegisterValidator("not_in", NotInValidator)
+	RegisterValidator("eq", EqValidator)
 }
 
 func RequiredValidator(field reflect.StructField, value reflect.Value, param string) error {
@@ -111,6 +112,13 @@ func NotInValidator(field reflect.StructField, value reflect.Value, param string
 		if value.String() == allowedValue {
 			return fmt.Errorf("field '%s' must not be one of the following values: %s", field.Name, param)
 		}
+	}
+	return nil
+}
+
+func EqValidator(field reflect.StructField, value reflect.Value, param string) error {
+	if value.String() != param {
+		return fmt.Errorf("field '%s' must be equal to '%s'", field.Name, param)
 	}
 	return nil
 }
