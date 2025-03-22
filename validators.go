@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/mail"
 	"reflect"
+	"regexp"
 	"strconv"
 )
 
@@ -12,6 +13,7 @@ func init() {
 	RegisterValidator("min", MinValidator)
 	RegisterValidator("max", MaxValidator)
 	RegisterValidator("email", EmailValidator)
+	RegisterValidator("regexp", RegexpValidator)
 }
 
 func RequiredValidator(field reflect.StructField, value reflect.Value, param string) error {
@@ -65,6 +67,17 @@ func EmailValidator(field reflect.StructField, value reflect.Value, param string
 	_, err := mail.ParseAddress(value.String())
 	if err != nil {
 		return fmt.Errorf("field '%s' must be a valid email address", field.Name)
+	}
+	return nil
+}
+
+func RegexpValidator(field reflect.StructField, value reflect.Value, param string) error {
+	regex, err := regexp.Compile(param)
+	if err != nil {
+		return fmt.Errorf("invalid regex pattern for field '%s'", field.Name)
+	}
+	if !regex.MatchString(value.String()) {
+		return fmt.Errorf("field '%s' must match the pattern '%s'", field.Name, param)
 	}
 	return nil
 }
