@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 func init() {
@@ -16,6 +17,7 @@ func init() {
 	RegisterValidator("email", EmailValidator)
 	RegisterValidator("url", URLValidator)
 	RegisterValidator("regexp", RegexpValidator)
+	RegisterValidator("in", InValidator)
 }
 
 func RequiredValidator(field reflect.StructField, value reflect.Value, param string) error {
@@ -90,4 +92,14 @@ func URLValidator(field reflect.StructField, value reflect.Value, param string) 
 		return fmt.Errorf("field '%s' must be a valid URL", field.Name)
 	}
 	return nil
+}
+
+func InValidator(field reflect.StructField, value reflect.Value, param string) error {
+	allowedValues := strings.Split(param, "|")
+	for _, allowedValue := range allowedValues {
+		if value.String() == allowedValue {
+			return nil
+		}
+	}
+	return fmt.Errorf("field '%s' must be one of the following values: %s", field.Name, param)
 }
