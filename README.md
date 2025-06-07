@@ -1,6 +1,15 @@
 # github.com/Tech-Arch1tect/config
 
-An extremely simple library to load configurations from environment variables.
+An extremely simple library to load configurations from environment variables and .env files.
+
+## Features
+
+- **Environment Variable Loading**: Load configuration from environment variables
+- **.env File Support**: Automatically loads variables from a .env file
+- **Environment Override**: Environment variables take precedence over .env file values
+- **Validation**: ~~Comprehensive~~ (not yet!) validation rules for configuration values
+- **Default Values**: Set default values through the `SetDefaults` method
+- **No External Dependencies**: Pure Go implementation
 
 ## Supported Validations (more to come)
 
@@ -56,10 +65,72 @@ func main() {
 }
 ```
 
+## .env File Support
+
+The library automatically loads environment variables from a `.env` file in the current directory. The .env file format supports:
+
+- Simple key=value pairs
+- Quoted values (both single and double quotes)
+- Comments (lines starting with #)
+- Empty lines (ignored)
+
+### Example .env file:
+
+```bash
+# Application Configuration
+APP_NAME="My Application"
+PORT=3000
+DEBUG=true
+DATABASE_URL='postgres://user:pass@localhost/mydb'
+
+# Email Configuration
+APP_EMAIL=admin@example.com
+```
+
+### Priority Order
+
+Configuration values are loaded in the following priority order (highest to lowest):
+
+1. **Environment Variables** - Values set in the actual environment
+2. **.env File** - Values from the .env file
+3. **Default Values** - Values set in the `SetDefaults()` method
+
+This means environment variables will always override .env file values, and .env file values will override defaults.
+
+### Example with .env file:
+
+**`.env` file:**
+
+```bash
+APP_NAME=EnvFileApp
+PORT=3000
+```
+
+**Environment variable:**
+
+```bash
+export APP_NAME=EnvironmentApp
+```
+
+**Result:**
+
+- `APP_NAME` will be `"EnvironmentApp"` (from environment variable)
+- `PORT` will be `3000` (from .env file)
+- `EMAIL` will be `"default@example.com"` (from defaults)
+
 ## How It Works
+
+- **.env File Loading:**  
+  The library first reads a `.env` file from the current directory (if it exists). Variables from this file are set in the environment only if they don't already exist.
 
 - **Environment Variable Loading:**  
   The library scans your struct for `env` tags and assigns the corresponding environment variable values. If an environment variable is not set, the `SetDefaults` method provides fallback values.
 
 - **Validation:**  
   After loading the configuration, the library validates the struct using the `validate` tags described above.
+
+## Error Handling
+
+- If the `.env` file doesn't exist, the library continues without error
+- If the `.env` file exists but has parsing errors, the library will return an error
+- Validation errors are returned if any configured validation rules fail
